@@ -10,7 +10,7 @@ type HomeScreenProps = {
 
 export function HomeScreen({ recipe, result }: HomeScreenProps) {
   const { currentUser } = useAuth();
-  const firstName = currentUser?.ownerName.split(" ")[0] ?? "Brenda";
+  const firstName = currentUser?.ownerName.split(" ")[0] ?? "Usuario";
   const statusCounts = {
     healthy: result.status === "healthy" ? 1 : 0,
     medium: result.status === "medium" ? 1 : 0,

@@ -1,7 +1,7 @@
-import { ChevronDown, History, Plus, Search, X } from "lucide-react";
-import { createPortal } from "react-dom";
-import { useMemo, useState } from "react";
+import { ChevronDown, History, Plus, Search } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { formatDecimalCurrency } from "../lib/formatting";
+import { RecipeToast } from "../components/RecipeToast";
 
 type IngredientItem = {
   id: string;
@@ -25,12 +25,29 @@ const ingredientsSeed: IngredientItem[] = [
 ];
 
 export function IngredientsScreen() {
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const toastTimerRef = useRef<number | null>(null);
 
-  const editingIngredient = useMemo(
-    () => ingredientsSeed.find((ingredient) => ingredient.id === editingId) ?? null,
-    [editingId]
-  );
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current !== null) {
+        window.clearTimeout(toastTimerRef.current);
+      }
+    };
+  }, []);
+
+  function showToast(message: string) {
+    setToastMessage(message);
+
+    if (toastTimerRef.current !== null) {
+      window.clearTimeout(toastTimerRef.current);
+    }
+
+    toastTimerRef.current = window.setTimeout(() => {
+      setToastMessage(null);
+      toastTimerRef.current = null;
+    }, 4200);
+  }
 
   return (
     <div className="relative flex h-full min-h-0 flex-col overflow-hidden">
@@ -42,28 +59,50 @@ export function IngredientsScreen() {
           </div>
           <button
             type="button"
-            className="grid h-12 w-12 place-items-center rounded-full bg-clay text-white shadow-button"
-            title="Fuera de alcance"
+            className="grid h-12 w-12 place-items-center rounded-full bg-clay text-white shadow-button transition hover:-translate-y-0.5 active:translate-y-0"
+            title="Nuevo insumo"
             aria-label="Nuevo insumo"
+            onClick={() => showToast("Crear insumo está fuera del alcance")}
           >
             <Plus size={22} />
           </button>
         </div>
 
-        <div className="flex h-11 items-center gap-3 rounded-[14px] bg-[#f2f0ee] px-4 text-cocoa/42">
+        <button
+          type="button"
+          onClick={() => showToast("Buscar insumo está fuera del alcance")}
+          className="flex h-11 w-full items-center gap-3 rounded-[14px] bg-[#f2f0ee] px-4 text-left text-cocoa/42 transition hover:bg-[#ece7e2] active:scale-[0.995]"
+          aria-label="Buscar insumo"
+        >
           <Search size={18} />
           <span className="text-sm font-bold">Buscar por nombre o proveedor...</span>
-        </div>
+        </button>
       </div>
 
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto pb-2">
         {ingredientsSeed.map((ingredient) => (
-          <IngredientCard key={ingredient.id} ingredient={ingredient} onEdit={() => setEditingId(ingredient.id)} />
+          <IngredientCard
+            key={ingredient.id}
+            ingredient={ingredient}
+            onEdit={() => showToast("Editar insumo fuera del alcance")}
+            onShowHistory={() => showToast("Historial fuera del alcance")}
+            onShowDetails={() => showToast("Detalles del insumo fuera del alcance")}
+          />
         ))}
       </div>
 
-      {editingIngredient ? (
-        <EditSheetPortal ingredient={editingIngredient} onClose={() => setEditingId(null)} />
+      {toastMessage ? (
+        <RecipeToast
+          open
+          description={toastMessage}
+          onClose={() => {
+            setToastMessage(null);
+            if (toastTimerRef.current !== null) {
+              window.clearTimeout(toastTimerRef.current);
+              toastTimerRef.current = null;
+            }
+          }}
+        />
       ) : null}
     </div>
   );
@@ -71,10 +110,14 @@ export function IngredientsScreen() {
 
 function IngredientCard({
   ingredient,
-  onEdit
+  onEdit,
+  onShowHistory,
+  onShowDetails
 }: {
   ingredient: IngredientItem;
   onEdit: () => void;
+  onShowHistory: () => void;
+  onShowDetails: () => void;
 }) {
   const netPrice = ingredient.unitPrice * (1 + ingredient.merma / 100);
 
@@ -112,109 +155,26 @@ function IngredientCard({
         >
           Editar
         </button>
-        <button type="button" className="border-r border-cocoa/8 py-3 text-cocoa/62 transition hover:bg-[#fcf6f1]">
+        <button
+          type="button"
+          onClick={onShowHistory}
+          className="border-r border-cocoa/8 py-3 text-cocoa/62 transition hover:bg-[#fcf6f1]"
+        >
           <span className="inline-flex items-center gap-1">
             <History size={14} />
             Historial
           </span>
         </button>
-        <button type="button" className="py-3 text-cocoa/42 transition hover:bg-[#fcf6f1]" aria-label="Más opciones">
+        <button
+          type="button"
+          onClick={onShowDetails}
+          className="py-3 text-cocoa/42 transition hover:bg-[#fcf6f1]"
+          aria-label="Más opciones"
+          title="Más opciones"
+        >
           <ChevronDown size={18} className="mx-auto" />
         </button>
       </div>
     </article>
-  );
-}
-
-function EditSheetPortal({ ingredient, onClose }: { ingredient: IngredientItem; onClose: () => void }) {
-  const host = typeof document === "undefined" ? null : document.getElementById("screen-overlay-host");
-
-  if (!host) {
-    return null;
-  }
-
-  return createPortal(<EditSheet ingredient={ingredient} onClose={onClose} />, host);
-}
-
-function EditSheet({ ingredient, onClose }: { ingredient: IngredientItem; onClose: () => void }) {
-  const netCost = ingredient.unitPrice * (1 + ingredient.merma / 100);
-
-  return (
-    <div className="pointer-events-auto absolute inset-0 overflow-hidden bg-[#7a716d]/45">
-      <div className="absolute inset-0" onClick={onClose} aria-hidden="true" />
-      <div className="absolute inset-x-0 bottom-0 z-10 rounded-t-[26px] bg-white px-5 pb-5 pt-4 shadow-card">
-        <div className="mb-4 flex items-start justify-between gap-4">
-          <h2 className="text-[18px] font-black leading-none text-cocoa">Editar Insumo</h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="grid h-9 w-9 place-items-center rounded-full bg-[#f5f3f1] text-cocoa/75"
-            aria-label="Cerrar"
-          >
-            <X size={18} />
-          </button>
-        </div>
-
-        <div className="space-y-2.5">
-          <Field label="Nombre del insumo *" value={ingredient.name} />
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Unidad de medida" value={ingredient.unit} select />
-            <Field label="Precio unitario ($) *" value={ingredient.unitPrice.toString()} numeric />
-          </div>
-          <Field label="% Merma (desperdicio)" value={ingredient.merma.toString()} numeric />
-          <p className="text-[11px] font-black text-[#ff6d00]">Costo neto ≈ {formatDecimalCurrency.format(netCost)}</p>
-          <Field label="Proveedor (opcional)" value={ingredient.supplier} placeholder="Ej: Molinera del Sur" />
-
-          <button
-            type="button"
-            onClick={onClose}
-            className="mt-1 flex w-full items-center justify-center gap-2 rounded-[14px] bg-clay px-4 py-3 text-[15px] font-black text-white shadow-button"
-          >
-            ✓ Guardar Cambios
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Field({
-  label,
-  value,
-  placeholder,
-  select,
-  numeric
-}: {
-  label: string;
-  value: string;
-  placeholder?: string;
-  select?: boolean;
-  numeric?: boolean;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-1 block text-[11px] font-black text-cocoa/72">{label}</span>
-      <div className="rounded-[14px] bg-[#f4f2f0] px-4 py-1.5 text-[14px] font-medium text-cocoa">
-        {select ? (
-          <div className="flex items-center justify-between gap-3">
-            <span>{value}</span>
-            <ChevronDown size={16} className="text-cocoa/45" />
-          </div>
-        ) : numeric ? (
-          <input
-            type="number"
-            defaultValue={value}
-            className="w-full bg-transparent outline-none [appearance:textfield]"
-          />
-        ) : (
-          <input
-            type="text"
-            defaultValue={value}
-            placeholder={placeholder}
-            className="w-full bg-transparent outline-none placeholder:text-cocoa/35"
-          />
-        )}
-      </div>
-    </label>
   );
 }

@@ -1,7 +1,9 @@
 import { ChevronRight, Plus, Search, TrendingDown, TrendingUp, Minus } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import type { CostResult, Recipe } from "../types/recipe";
 import { formatCurrency, formatPercent } from "../lib/formatting";
+import { RecipeToast } from "../components/RecipeToast";
 
 type RecipeOverviewScreenProps = {
   recipe: Recipe;
@@ -9,6 +11,30 @@ type RecipeOverviewScreenProps = {
 };
 
 export function RecipeOverviewScreen({ recipe, result }: RecipeOverviewScreenProps) {
+  const [toastOpen, setToastOpen] = useState(false);
+  const toastTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current !== null) {
+        window.clearTimeout(toastTimerRef.current);
+      }
+    };
+  }, []);
+
+  function showRecipeToast() {
+    setToastOpen(true);
+
+    if (toastTimerRef.current !== null) {
+      window.clearTimeout(toastTimerRef.current);
+    }
+
+    toastTimerRef.current = window.setTimeout(() => {
+      setToastOpen(false);
+      toastTimerRef.current = null;
+    }, 4200);
+  }
+
   const activeCard = {
     id: recipe.id,
     name: recipe.name,
@@ -30,9 +56,10 @@ export function RecipeOverviewScreen({ recipe, result }: RecipeOverviewScreenPro
         </div>
         <button
           type="button"
-          className="grid h-12 w-12 place-items-center rounded-full bg-clay text-white shadow-button"
-          title="Fuera de alcance"
-          aria-label="Nueva receta fuera de alcance"
+          className="grid h-12 w-12 place-items-center rounded-full bg-clay text-white shadow-button transition hover:-translate-y-0.5 active:translate-y-0"
+          title="Crear receta"
+          aria-label="Crear receta"
+          onClick={showRecipeToast}
         >
           <Plus size={22} />
         </button>
@@ -46,6 +73,19 @@ export function RecipeOverviewScreen({ recipe, result }: RecipeOverviewScreenPro
       <div className="space-y-3">
         <RecipeCard card={activeCard} />
       </div>
+
+      <RecipeToast
+        open={toastOpen}
+        title="Demo funcional"
+        description="El crear receta está fuera de este alcance."
+        onClose={() => {
+          setToastOpen(false);
+          if (toastTimerRef.current !== null) {
+            window.clearTimeout(toastTimerRef.current);
+            toastTimerRef.current = null;
+          }
+        }}
+      />
     </div>
   );
 }

@@ -6,9 +6,10 @@ import { formatDecimalCurrency } from "../lib/formatting";
 type CostBreakdownProps = {
   recipe: Recipe;
   result: CostResult;
+  onEditRecipe: () => void;
 };
 
-export function CostBreakdown({ recipe, result }: CostBreakdownProps) {
+export function CostBreakdown({ recipe, result, onEditRecipe }: CostBreakdownProps) {
   const ingredientRows = recipe.ingredients.map((ingredient) => ({
     id: ingredient.id,
     name: ingredient.name,
@@ -20,7 +21,15 @@ export function CostBreakdown({ recipe, result }: CostBreakdownProps) {
     <section className="overflow-hidden rounded-[18px] bg-white shadow-card">
       <div className="flex items-center justify-between px-5 pt-5">
         <h2 className="text-[21px] font-black leading-none">Escandallo de Costos</h2>
-        <PenLine size={18} className="text-clay/90" />
+        <button
+          type="button"
+          onClick={onEditRecipe}
+          className="grid h-9 w-9 place-items-center rounded-full bg-[#f6efe9] text-clay transition hover:-translate-y-0.5 hover:bg-[#f1e3d8]"
+          aria-label="Editar receta"
+          title="Editar receta"
+        >
+          <PenLine size={18} className="text-clay/90" />
+        </button>
       </div>
 
       <div className="mt-4 px-5">

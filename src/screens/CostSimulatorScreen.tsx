@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Utensils, Users } from "lucide-react";
 import { CostBreakdown } from "../components/CostBreakdown";
 import { MarginSelector } from "../components/MarginSelector";
+import { RecipeToast } from "../components/RecipeToast";
 import type { CostResult, Recipe } from "../types/recipe";
 import { formatDecimalCurrency, formatPercent } from "../lib/formatting";
 
@@ -13,6 +15,8 @@ type CostSimulatorScreenProps = {
 };
 
 export function CostSimulatorScreen({ recipe, result, margin, setMargin }: CostSimulatorScreenProps) {
+  const [toastOpen, setToastOpen] = useState(false);
+  const toastTimerRef = useRef<number | null>(null);
   const statusMeta = {
     healthy: "Rentable",
     medium: "Revisar Costos",
@@ -23,6 +27,27 @@ export function CostSimulatorScreen({ recipe, result, margin, setMargin }: CostS
     medium: "bg-[#f4c97f] text-cocoa",
     critical: "bg-[#f6d0cc] text-danger"
   }[result.status];
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current !== null) {
+        window.clearTimeout(toastTimerRef.current);
+      }
+    };
+  }, []);
+
+  function showEditRecipeToast() {
+    setToastOpen(true);
+
+    if (toastTimerRef.current !== null) {
+      window.clearTimeout(toastTimerRef.current);
+    }
+
+    toastTimerRef.current = window.setTimeout(() => {
+      setToastOpen(false);
+      toastTimerRef.current = null;
+    }, 4200);
+  }
 
   return (
     <div className="-mx-5 -mt-7 space-y-5">
@@ -80,8 +105,20 @@ export function CostSimulatorScreen({ recipe, result, margin, setMargin }: CostS
         </section>
 
         <MarginSelector margin={margin} baseCost={result.totalCost} onChange={setMargin} />
-        <CostBreakdown recipe={recipe} result={result} />
-        </div>
+        <CostBreakdown recipe={recipe} result={result} onEditRecipe={showEditRecipeToast} />
+      </div>
+
+      <RecipeToast
+        open={toastOpen}
+        description="Editar receta está fuera del alcance."
+        onClose={() => {
+          setToastOpen(false);
+          if (toastTimerRef.current !== null) {
+            window.clearTimeout(toastTimerRef.current);
+            toastTimerRef.current = null;
+          }
+        }}
+      />
     </div>
   );
 }
