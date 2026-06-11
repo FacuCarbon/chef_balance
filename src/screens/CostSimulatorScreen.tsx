@@ -26,7 +26,7 @@ export function CostSimulatorScreen({ recipe, result, margin, setMargin }: CostS
 
   return (
     <div className="-mx-5 -mt-7 space-y-5">
-      <section className="relative h-[242px] overflow-hidden">
+      <section className="relative h-[clamp(190px,29dvh,242px)] overflow-hidden">
         <img src={recipe.imageUrl} alt="" className="h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-cocoa/10 via-cocoa/16 to-cocoa/78" />
         <Link
@@ -68,7 +68,7 @@ export function CostSimulatorScreen({ recipe, result, margin, setMargin }: CostS
           <div className="mt-5 border-t border-white/15 pt-4">
             <p className="text-[12px] font-black text-white/88">Precio de Venta Sugerido (lote completo)</p>
             <div className="mt-3 flex items-end justify-between gap-4">
-              <p className="font-display text-[32px] font-bold leading-none text-white">
+              <p className="min-w-0 break-words font-display text-[clamp(26px,4dvh,32px)] font-bold leading-none text-white">
                 {formatDecimalCurrency.format(result.suggestedBatchPrice)}
               </p>
               <div className="text-right">
@@ -88,9 +88,11 @@ export function CostSimulatorScreen({ recipe, result, margin, setMargin }: CostS
 
 function SmallMetric({ label, value, muted }: { label: string; value: string; muted?: boolean }) {
   return (
-    <div>
+    <div className="min-w-0">
       <p className="text-[12px] font-black text-white/78">{label}</p>
-      <p className={`mt-1 text-[22px] font-black leading-none ${muted ? "text-[#ffb7ad]" : "text-white"}`}>{value}</p>
+      <p className={`mt-1 truncate text-[clamp(18px,3dvh,22px)] font-black leading-none ${muted ? "text-[#ffb7ad]" : "text-white"}`}>
+        {value}
+      </p>
     </div>
   );
 }

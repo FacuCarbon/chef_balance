@@ -38,25 +38,25 @@ export function AuthScreen() {
 
   if (mode === "register") {
     return (
-      <div className="flex min-h-full flex-col overflow-hidden bg-[radial-gradient(circle_at_78%_3%,rgba(234,202,179,.9),transparent_210px),linear-gradient(180deg,#fffaf6_0%,#fffaf6_58%,#f7d7cc_100%)] px-7 pb-6 pt-12">
+      <div className="flex h-full min-h-0 flex-col overflow-y-auto bg-[radial-gradient(circle_at_78%_3%,rgba(234,202,179,.9),transparent_210px),linear-gradient(180deg,#fffaf6_0%,#fffaf6_58%,#f7d7cc_100%)] px-7 pb-4 pt-[clamp(16px,3dvh,28px)]">
         <div className="flex items-center gap-3">
-          <div className="grid h-9 w-9 place-items-center rounded-full bg-biscuit text-clay">
-            <ChefHat size={20} strokeWidth={2} />
+          <div className="grid h-8 w-8 place-items-center rounded-full bg-biscuit text-clay">
+            <ChefHat size={18} strokeWidth={2} />
           </div>
           <div>
-            <p className="font-display text-[19px] font-bold leading-none text-cocoa">Chef Balance</p>
+            <p className="font-display text-[18px] font-bold leading-none text-cocoa">Chef Balance</p>
             <p className="mt-0.5 text-[11px] font-bold text-cocoa/42">Tu rentabilidad, clara y simple.</p>
           </div>
         </div>
 
-        <section className="mt-8">
-          <h1 className="font-display text-[29px] font-bold leading-none text-cocoa">Crear cuenta</h1>
-          <p className="mt-2 max-w-[280px] text-sm font-bold leading-5 text-cocoa/62">
+        <section className="mt-[clamp(12px,2.5dvh,20px)]">
+          <h1 className="font-display text-[26px] font-bold leading-none text-cocoa">Crear cuenta</h1>
+          <p className="mt-1.5 max-w-[280px] text-[12px] font-bold leading-[1.35] text-cocoa/62">
             Empezá a conocer la rentabilidad real de tu negocio.
           </p>
         </section>
 
-        <form onSubmit={handleSubmit} className="mt-7 space-y-4">
+        <form onSubmit={handleSubmit} className="mt-[clamp(12px,2.5dvh,18px)] space-y-3">
           <Field label="Nombre y apellido" name="ownerName" placeholder="Brenda Garcia" />
           <Field label="Correo Electrónico" name="email" type="email" placeholder="brenda@pasteleria.com" />
           <PasswordField
@@ -78,24 +78,24 @@ export function AuthScreen() {
 
           <button
             type="submit"
-            className="flex w-full items-center justify-center gap-3 rounded-[14px] bg-clay px-5 py-3.5 text-base font-black text-white shadow-button transition hover:-translate-y-0.5"
+            className="flex w-full items-center justify-center gap-3 rounded-[14px] bg-clay px-5 py-2.5 text-[15px] font-black text-white shadow-button transition hover:-translate-y-0.5"
           >
             <CircleCheck size={18} />
             Crear mi cuenta gratis
           </button>
         </form>
 
-        <div className="mt-5 flex items-center gap-3 text-xs font-bold text-cocoa/35">
+        <div className="mt-2.5 flex items-center gap-3 text-[11px] font-bold text-cocoa/35">
           <span className="h-px flex-1 bg-cocoa/10" />
           <span>o registrate con</span>
           <span className="h-px flex-1 bg-cocoa/10" />
         </div>
 
-        <div className="mt-4 flex justify-center gap-4">
-          <span className="grid h-11 w-11 place-items-center rounded-full bg-white text-sm font-black text-cocoa shadow-card">
+        <div className="mt-2 flex justify-center gap-4">
+          <span className="grid h-9 w-9 place-items-center rounded-full bg-white text-[13px] font-black text-cocoa shadow-card">
             G
           </span>
-          <span className="grid h-11 w-11 place-items-center rounded-full bg-white text-sm font-black text-cocoa shadow-card">
+          <span className="grid h-9 w-9 place-items-center rounded-full bg-white text-[13px] font-black text-cocoa shadow-card">
             f
           </span>
         </div>
@@ -106,7 +106,7 @@ export function AuthScreen() {
             setError(null);
             setMode("login");
           }}
-          className="mt-5 w-full text-center text-sm font-black text-cocoa/60"
+          className="mt-3.5 w-full text-center text-sm font-black text-cocoa/60"
         >
           ¿Ya tenés cuenta? <span className="text-clay">Iniciar sesión</span>
         </button>
@@ -115,18 +115,20 @@ export function AuthScreen() {
   }
 
   return (
-    <div className="flex min-h-full flex-col justify-end overflow-hidden bg-[radial-gradient(circle_at_54%_4%,rgba(234,202,179,.9),transparent_230px),linear-gradient(180deg,#fff8f2_0%,#f7d7cc_48%,#fffaf6_100%)] px-6 pb-7 pt-12">
-      <div className="mb-10 text-center">
-        <div className="mx-auto grid h-28 w-28 place-items-center rounded-full bg-white text-clay shadow-card">
-          <ChefHat size={58} strokeWidth={1.9} />
+    <div className="flex h-full min-h-0 flex-col overflow-y-auto bg-[radial-gradient(circle_at_54%_4%,rgba(234,202,179,.9),transparent_230px),linear-gradient(180deg,#fff8f2_0%,#f7d7cc_48%,#fffaf6_100%)] px-6 pb-7 pt-[clamp(20px,4dvh,36px)]">
+      <div className="mb-[clamp(16px,3dvh,28px)] text-center">
+        <div className="mx-auto grid h-[clamp(76px,12dvh,100px)] w-[clamp(76px,12dvh,100px)] place-items-center rounded-full bg-white text-clay shadow-card">
+          <ChefHat className="h-[52%] w-[52%]" strokeWidth={1.9} />
         </div>
-        <h1 className="mt-7 font-display text-[42px] font-bold leading-none">Chef Balance</h1>
-        <p className="mt-3 text-base font-black text-clay">Tu rentabilidad, clara y simple.</p>
+        <h1 className="mt-[clamp(14px,3dvh,22px)] font-display text-[clamp(30px,4.4dvh,38px)] font-bold leading-none">
+          Chef Balance
+        </h1>
+        <p className="mt-2 text-[15px] font-black text-clay">Tu rentabilidad, clara y simple.</p>
       </div>
 
-      <section className="rounded-t-[23px] border border-white/80 bg-white/85 p-6 shadow-card backdrop-blur">
-        <h2 className="text-center text-2xl font-black">¡Bienvenido!</h2>
-        <form onSubmit={handleSubmit} className="mt-7 space-y-4">
+      <section className="rounded-t-[23px] border border-white/80 bg-white/85 p-5 shadow-card backdrop-blur">
+        <h2 className="text-center text-[22px] font-black">¡Bienvenido!</h2>
+        <form onSubmit={handleSubmit} className="mt-5 space-y-3.5">
           <Field
             label="Correo Electrónico"
             name="email"
@@ -147,7 +149,7 @@ export function AuthScreen() {
           ) : null}
           <button
             type="submit"
-            className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-clay px-5 py-4 text-base font-black text-white shadow-button transition hover:-translate-y-0.5"
+            className="mt-1.5 flex w-full items-center justify-center gap-2 rounded-2xl bg-clay px-5 py-3.5 text-base font-black text-white shadow-button transition hover:-translate-y-0.5"
           >
             Iniciar sesión
             <ArrowRight size={18} />
@@ -160,7 +162,7 @@ export function AuthScreen() {
             setError(null);
             setMode(mode === "login" ? "register" : "login");
           }}
-          className="mt-6 w-full rounded-2xl border border-clay px-4 py-3 text-sm font-black text-clay transition hover:bg-biscuit/60"
+          className="mt-4 w-full rounded-2xl border border-clay px-4 py-3 text-sm font-black text-clay transition hover:bg-biscuit/60"
         >
           Crear cuenta gratis
         </button>
@@ -185,7 +187,7 @@ function Field({
   return (
     <label className="block">
       <span className="text-sm font-black text-cocoa/75">{label}</span>
-      <span className="mt-2 flex items-center rounded-2xl border border-cocoa/10 bg-white px-4 py-3">
+      <span className="mt-1.5 flex items-center rounded-2xl border border-cocoa/10 bg-white px-4 py-2">
         <input
           required
           name={name}
@@ -218,7 +220,7 @@ function PasswordField({
   return (
     <label className="block">
       <span className="text-sm font-black text-cocoa/75">{label}</span>
-      <span className="mt-2 flex items-center rounded-2xl border border-cocoa/10 bg-white px-4 py-3">
+      <span className="mt-1.5 flex items-center rounded-2xl border border-cocoa/10 bg-white px-4 py-2">
         <input
           required
           name={name}

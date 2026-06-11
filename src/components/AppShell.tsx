@@ -28,7 +28,11 @@ export function AppShell({ children }: AppShellProps) {
             </button>
           </header>
         ) : null}
-        <section className="relative h-full min-h-0 overflow-hidden bg-[#FFFCF9]">
+        <section
+          className={`relative h-full min-h-0 bg-[#FFFCF9] ${
+            currentUser ? "overflow-hidden" : "overflow-y-auto overflow-x-hidden"
+          }`}
+        >
           {children}
           <div id="screen-overlay-host" className="pointer-events-none absolute inset-0 z-50" />
         </section>

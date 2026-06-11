@@ -11,14 +11,14 @@ const tabs = [
 
 export function FlowTabs() {
   return (
-    <nav className="z-30 grid h-[84px] shrink-0 grid-cols-5 border-t border-cocoa/10 bg-white px-4 pb-3 pt-3 shadow-[0_-10px_30px_rgba(80,35,16,0.08)]">
+    <nav className="z-30 grid h-[clamp(72px,10dvh,84px)] shrink-0 grid-cols-5 border-t border-cocoa/10 bg-white px-4 pb-2 pt-2 shadow-[0_-10px_30px_rgba(80,35,16,0.08)]">
       {tabs.map(({ to, label, icon: Icon, featured }) => (
         <NavLink
           key={`${to}-${label}`}
           to={to}
           className={({ isActive }) =>
             featured
-              ? "relative -mt-10 flex flex-col items-center gap-1 text-[10px] font-bold text-clay"
+              ? "relative -mt-8 flex flex-col items-center gap-1 text-[10px] font-bold text-clay"
               : `flex flex-col items-center gap-1 rounded-xl px-1 py-1.5 text-[10px] font-bold transition ${
                   isActive ? "text-clay" : "text-cocoa/38 hover:text-clay"
                 }`
@@ -27,7 +27,7 @@ export function FlowTabs() {
           <span
             className={
               featured
-                ? "grid h-14 w-14 place-items-center rounded-full bg-clay text-white shadow-button"
+                ? "grid h-[clamp(48px,7dvh,56px)] w-[clamp(48px,7dvh,56px)] place-items-center rounded-full bg-clay text-white shadow-button"
                 : ""
             }
           >
